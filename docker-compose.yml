@@ -1,0 +1,181 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ad-agency-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ad_agency
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - ai-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ad-agency-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ai-network
+
+  # Backend API
+  backend-api:
+    build:
+      context: ./backend-api
+      dockerfile: Dockerfile
+    container_name: ad-agency-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend-api/.env
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - ai-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # AI Microservice
+  ai-microservice:
+    build:
+      context: ./ai-microservice
+      dockerfile: Dockerfile
+      target: ${NODE_ENV:-development}
+    container_name: ai-microservice
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./ai-microservice/.env
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    volumes:
+      - ./ai-microservice:/app
+      - /app/node_modules
+      - ai-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - ai-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # Realtime Server
+  realtime-server:
+    build:
+      context: ./realtime-server
+      dockerfile: Dockerfile
+    container_name: ad-agency-realtime
+    restart: unless-stopped
+    ports:
+      - "4001:4001"
+    env_file:
+      - ./realtime-server/.env
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    volumes:
+      - ./realtime-server:/app
+      - /app/node_modules
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - ai-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ad-agency-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend-api:
+        condition: service_healthy
+    networks:
+      - ai-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 32M
+
+networks:
+  ai-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  ai-logs:
+    driver: local

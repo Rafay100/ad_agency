@@ -1,0 +1,339 @@
+openapi: 3.0.0
+info:
+  title: AdAgency API
+  description: Advertising Agency Campaign Management API
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:4000
+    description: Development server
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      tags: [System]
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Validation error
+
+  /api/auth/login:
+    post:
+      summary: Login user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  user:
+                    type: object
+
+  /api/campaigns:
+    get:
+      summary: List all campaigns
+      tags: [Campaigns]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, paused, completed, draft]
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            default: createdAt
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: List of campaigns
+        '401':
+          description: Unauthorized
+
+    post:
+      summary: Create a new campaign
+      tags: [Campaigns]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, clientId, budget]
+              properties:
+                name:
+                  type: string
+                clientId:
+                  type: string
+                  format: uuid
+                budget:
+                  type: number
+                status:
+                  type: string
+                  enum: [active, paused, completed, draft]
+                  default: draft
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+      responses:
+        '201':
+          description: Campaign created
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+
+  /api/campaigns/{id}:
+    get:
+      summary: Get a single campaign
+      tags: [Campaigns]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Campaign details
+        '404':
+          description: Campaign not found
+
+    put:
+      summary: Update a campaign
+      tags: [Campaigns]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                budget:
+                  type: number
+                status:
+                  type: string
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Campaign updated
+        '404':
+          description: Campaign not found
+
+    delete:
+      summary: Soft delete a campaign
+      tags: [Campaigns]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Campaign deleted
+        '404':
+          description: Campaign not found
+
+  /api/clients:
+    get:
+      summary: List all clients
+      tags: [Clients]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of clients
+
+    post:
+      summary: Create a new client
+      tags: [Clients]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                company:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        '201':
+          description: Client created
+
+  /api/alert-rules:
+    get:
+      summary: List all alert rules
+      tags: [Alert Rules]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of alert rules
+
+    post:
+      summary: Create an alert rule
+      tags: [Alert Rules]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, type, condition]
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [ctr_low, budget_high, spend_rate, impressions_drop]
+                condition:
+                  type: object
+                severity:
+                  type: string
+                  enum: [info, warning, critical]
+                cooldownMinutes:
+                  type: integer
+                  default: 60
+      responses:
+        '201':
+          description: Alert rule created
+
+  /api/notifications/unread-count:
+    get:
+      summary: Get unread notification count
+      tags: [Notifications]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Unread count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

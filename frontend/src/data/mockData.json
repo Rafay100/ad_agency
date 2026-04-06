@@ -1,0 +1,71 @@
+{
+  "kpis": {
+    "impressions": 2847392,
+    "clicks": 142369,
+    "ctr": 4.99,
+    "conversions": 8542,
+    "spend": 47823.50,
+    "roas": 3.42
+  },
+  "kpiTrends": {
+    "impressions": 12.5,
+    "clicks": 8.3,
+    "ctr": -1.2,
+    "conversions": 15.7,
+    "spend": 5.1,
+    "roas": 3.8
+  },
+  "dailyPerformance": [
+    { "date": "2025-03-01", "impressions": 84230, "clicks": 4211, "conversions": 253, "spend": 1420 },
+    { "date": "2025-03-02", "impressions": 91540, "clicks": 4577, "conversions": 274, "spend": 1530 },
+    { "date": "2025-03-03", "impressions": 78920, "clicks": 3946, "conversions": 237, "spend": 1320 },
+    { "date": "2025-03-04", "impressions": 102340, "clicks": 5117, "conversions": 307, "spend": 1710 },
+    { "date": "2025-03-05", "impressions": 95670, "clicks": 4783, "conversions": 287, "spend": 1595 },
+    { "date": "2025-03-06", "impressions": 88450, "clicks": 4422, "conversions": 265, "spend": 1475 },
+    { "date": "2025-03-07", "impressions": 112890, "clicks": 5644, "conversions": 339, "spend": 1885 },
+    { "date": "2025-03-08", "impressions": 98230, "clicks": 4911, "conversions": 295, "spend": 1640 },
+    { "date": "2025-03-09", "impressions": 85670, "clicks": 4283, "conversions": 257, "spend": 1430 },
+    { "date": "2025-03-10", "impressions": 106780, "clicks": 5339, "conversions": 320, "spend": 1780 },
+    { "date": "2025-03-11", "impressions": 93450, "clicks": 4672, "conversions": 280, "spend": 1560 },
+    { "date": "2025-03-12", "impressions": 101230, "clicks": 5061, "conversions": 304, "spend": 1690 },
+    { "date": "2025-03-13", "impressions": 87560, "clicks": 4378, "conversions": 263, "spend": 1460 },
+    { "date": "2025-03-14", "impressions": 109870, "clicks": 5493, "conversions": 330, "spend": 1830 },
+    { "date": "2025-03-15", "impressions": 96780, "clicks": 4839, "conversions": 290, "spend": 1615 },
+    { "date": "2025-03-16", "impressions": 82340, "clicks": 4117, "conversions": 247, "spend": 1375 },
+    { "date": "2025-03-17", "impressions": 104560, "clicks": 5228, "conversions": 314, "spend": 1745 },
+    { "date": "2025-03-18", "impressions": 99870, "clicks": 4993, "conversions": 300, "spend": 1665 },
+    { "date": "2025-03-19", "impressions": 91230, "clicks": 4561, "conversions": 274, "spend": 1520 },
+    { "date": "2025-03-20", "impressions": 107890, "clicks": 5394, "conversions": 324, "spend": 1800 },
+    { "date": "2025-03-21", "impressions": 94560, "clicks": 4728, "conversions": 284, "spend": 1580 },
+    { "date": "2025-03-22", "impressions": 88900, "clicks": 4445, "conversions": 267, "spend": 1485 },
+    { "date": "2025-03-23", "impressions": 103450, "clicks": 5172, "conversions": 310, "spend": 1725 },
+    { "date": "2025-03-24", "impressions": 97230, "clicks": 4861, "conversions": 292, "spend": 1625 },
+    { "date": "2025-03-25", "impressions": 86780, "clicks": 4339, "conversions": 260, "spend": 1450 },
+    { "date": "2025-03-26", "impressions": 110560, "clicks": 5528, "conversions": 332, "spend": 1845 },
+    { "date": "2025-03-27", "impressions": 100230, "clicks": 5011, "conversions": 301, "spend": 1675 },
+    { "date": "2025-03-28", "impressions": 92340, "clicks": 4617, "conversions": 277, "spend": 1540 },
+    { "date": "2025-03-29", "impressions": 105670, "clicks": 5283, "conversions": 317, "spend": 1765 },
+    { "date": "2025-03-30", "impressions": 98560, "clicks": 4928, "conversions": 296, "spend": 1645 }
+  ],
+  "channelPerformance": [
+    { "channel": "Google Ads", "spend": 18420, "revenue": 62947, "conversions": 3421 },
+    { "channel": "Facebook", "spend": 12350, "revenue": 45692, "conversions": 2156 },
+    { "channel": "Instagram", "spend": 8920, "revenue": 28543, "conversions": 1523 },
+    { "channel": "LinkedIn", "spend": 5670, "revenue": 19278, "conversions": 892 },
+    { "channel": "TikTok", "spend": 2463.50, "revenue": 7182, "conversions": 550 }
+  ],
+  "campaigns": [
+    { "id": "c1", "name": "Spring Sale - Search", "client": "TechCorp", "platform": "Google Ads", "status": "active", "budget": 15000, "spent": 8420, "impressions": 452300, "clicks": 22615, "conversions": 1357, "ctr": 5.0, "roas": 3.8, "startDate": "2025-03-01", "endDate": "2025-04-30" },
+    { "id": "c2", "name": "Brand Awareness Q1", "client": "FashionHub", "platform": "Facebook", "status": "active", "budget": 10000, "spent": 6230, "impressions": 892100, "clicks": 35684, "conversions": 1784, "ctr": 4.0, "roas": 2.9, "startDate": "2025-01-15", "endDate": "2025-03-31" },
+    { "id": "c3", "name": "Product Launch - Meta", "client": "StartupXYZ", "platform": "Instagram", "status": "active", "budget": 8000, "spent": 5670, "impressions": 678200, "clicks": 27128, "conversions": 1085, "ctr": 4.0, "roas": 2.5, "startDate": "2025-02-20", "endDate": "2025-04-20" },
+    { "id": "c4", "name": "B2B Lead Generation", "client": "SaaSPro", "platform": "LinkedIn", "status": "active", "budget": 12000, "spent": 7890, "impressions": 234500, "clicks": 9380, "conversions": 845, "ctr": 4.0, "roas": 4.2, "startDate": "2025-03-10", "endDate": "2025-05-10" },
+    { "id": "c5", "name": "Holiday Prep - Display", "client": "E-Shop Inc", "platform": "Google Ads", "status": "paused", "budget": 20000, "spent": 12450, "impressions": 1245000, "clicks": 49800, "conversions": 2490, "ctr": 4.0, "roas": 3.1, "startDate": "2025-02-01", "endDate": "2025-06-01" },
+    { "id": "c6", "name": "App Install Campaign", "client": "MobileFirst", "platform": "TikTok", "status": "active", "budget": 5000, "spent": 2340, "impressions": 567800, "clicks": 28390, "conversions": 1419, "ctr": 5.0, "roas": 2.1, "startDate": "2025-03-15", "endDate": "2025-04-15" },
+    { "id": "c7", "name": "Retargeting - Dynamic", "client": "TechCorp", "platform": "Facebook", "status": "active", "budget": 7000, "spent": 4560, "impressions": 345600, "clicks": 17280, "conversions": 1382, "ctr": 5.0, "roas": 5.1, "startDate": "2025-03-01", "endDate": "2025-04-30" },
+    { "id": "c8", "name": "Summer Preview", "client": "FashionHub", "platform": "Instagram", "status": "draft", "budget": 9000, "spent": 0, "impressions": 0, "clicks": 0, "conversions": 0, "ctr": 0, "roas": 0, "startDate": "2025-04-15", "endDate": "2025-06-15" },
+    { "id": "c9", "name": "Enterprise Outreach", "client": "SaaSPro", "platform": "LinkedIn", "status": "completed", "budget": 15000, "spent": 14890, "impressions": 456700, "clicks": 18268, "conversions": 1644, "ctr": 4.0, "roas": 4.8, "startDate": "2025-01-01", "endDate": "2025-02-28" },
+    { "id": "c10", "name": "Viral Challenge", "client": "StartupXYZ", "platform": "TikTok", "status": "active", "budget": 6000, "spent": 3780, "impressions": 1890000, "clicks": 75600, "conversions": 2268, "ctr": 4.0, "roas": 2.8, "startDate": "2025-03-05", "endDate": "2025-04-05" },
+    { "id": "c11", "name": "Local Business Boost", "client": "E-Shop Inc", "platform": "Google Ads", "status": "active", "budget": 4000, "spent": 2100, "impressions": 189000, "clicks": 7560, "conversions": 529, "ctr": 4.0, "roas": 3.4, "startDate": "2025-03-20", "endDate": "2025-04-20" },
+    { "id": "c12", "name": "Newsletter Signup", "client": "MobileFirst", "platform": "Facebook", "status": "paused", "budget": 3000, "spent": 1890, "impressions": 234500, "clicks": 11725, "conversions": 703, "ctr": 5.0, "roas": 1.8, "startDate": "2025-02-15", "endDate": "2025-03-15" }
+  ]
+}
