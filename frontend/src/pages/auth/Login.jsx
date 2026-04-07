@@ -23,12 +23,18 @@ const Login = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true)
     try {
+      console.log('Attempting login to:', import.meta.env.VITE_API_URL || 'http://localhost:4000/api')
       await login(data)
       toast.success('Login successful!')
       // Hard redirect - forces full page reload
       window.location.href = '/'
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Login failed')
+      console.error('Login error:', error)
+      console.error('Error response:', error.response)
+      console.error('Error message:', error.message)
+      
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Login failed'
+      toast.error(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

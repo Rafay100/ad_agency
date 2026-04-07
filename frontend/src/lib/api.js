@@ -7,6 +7,9 @@ const api = axios.create({
   },
 })
 
+// Log the base URL on creation
+console.log('API baseURL set to:', import.meta.env.VITE_API_URL || 'http://localhost:4000/api')
+
 // Add token to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken')
