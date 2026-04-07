@@ -27,16 +27,17 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const { data } = await api.post('/auth/login', credentials)
-    localStorage.setItem('accessToken', data.accessToken)
-    localStorage.setItem('refreshToken', data.refreshToken)
-    setUser(data.user)
-    return data
+    const result = data.data || data  // Handle nested response structure
+    localStorage.setItem('accessToken', result.accessToken)
+    localStorage.setItem('refreshToken', result.refreshToken)
+    setUser(result.user)
+    return result
   }
 
   const register = async (userData) => {
     const { data } = await api.post('/auth/register', userData)
     // Don't auto-login after registration - user must sign in manually
-    return data
+    return data.data || data
   }
 
   const logout = () => {
