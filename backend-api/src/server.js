@@ -89,6 +89,12 @@ const start = async () => {
     logger.info('Database connection established')
     await sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
     logger.info('Database synchronized')
+  } catch (error) {
+    logger.error('Database connection/sync failed:', error.message)
+    logger.warn('Server will start without database. Check database configuration.')
+  }
+
+  try {
     server.listen(PORT, () => {
       logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`)
     })
