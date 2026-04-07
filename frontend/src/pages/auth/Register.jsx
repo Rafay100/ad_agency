@@ -29,12 +29,36 @@ const Register = () => {
   const onSubmit = async (data) => {
     setIsLoading(true)
     try {
+      console.log('Attempting register with:', { email: data.email, name: data.name, password: '***' })
+      console.log('API URL:', import.meta.env.VITE_API_URL || 'http://localhost:4000/api')
+      
       const { confirmPassword, ...userData } = data
       await registerUser(userData)
       toast.success('Account created! Please sign in.')
       navigate('/auth/login')
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Registration failed')
+      console.error('===== REGISTER ERROR =====')
+      console.error('Error:', error)
+      console.error('Error response:', error.response)
+      console.error('Error response data:', error.response?.data)
+      console.error('Error status:', error.response?.status)
+      console.error('Error message:', error.message)
+      console.error('Error code:', error.code)
+      
+      let errorMessage = 'Registration failed'
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message
+      } else if (error.response?.data?.data?.message) {
+        errorMessage = error.response.data.data.message
+      } else if (error.message) {
+        errorMessage = error.message
+      } else if (error.code === 'ERR_NETWORK') {
+        errorMessage = 'Network error - cannot reach server. Check backend URL.'
+      }
+      
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }

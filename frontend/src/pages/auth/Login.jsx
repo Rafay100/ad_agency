@@ -23,17 +23,37 @@ const Login = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true)
     try {
-      console.log('Attempting login to:', import.meta.env.VITE_API_URL || 'http://localhost:4000/api')
-      await login(data)
+      console.log('Attempting login with:', { email: data.email, password: '***' })
+      console.log('API URL:', import.meta.env.VITE_API_URL || 'http://localhost:4000/api')
+      
+      const response = await login(data)
+      console.log('Login response:', response)
       toast.success('Login successful!')
       // Hard redirect - forces full page reload
       window.location.href = '/'
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('===== LOGIN ERROR =====')
+      console.error('Error:', error)
       console.error('Error response:', error.response)
+      console.error('Error response data:', error.response?.data)
+      console.error('Error status:', error.response?.status)
       console.error('Error message:', error.message)
+      console.error('Error code:', error.code)
+      console.error('Network error:', error.request)
       
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || 'Login failed'
+      let errorMessage = 'Login failed'
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message
+      } else if (error.response?.data?.data?.message) {
+        errorMessage = error.response.data.data.message
+      } else if (error.message) {
+        errorMessage = error.message
+      } else if (error.code === 'ERR_NETWORK') {
+        errorMessage = 'Network error - cannot reach server. Check backend URL.'
+      }
+      
       toast.error(errorMessage)
     } finally {
       setIsSubmitting(false)
