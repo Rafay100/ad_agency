@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
@@ -9,7 +9,7 @@ import StepCampaignObjective from '@/components/forms/steps/StepCampaignObjectiv
 import StepCreativePreferences from '@/components/forms/steps/StepCreativePreferences'
 import StepReview from '@/components/forms/steps/StepReview'
 import AICampaignOutput from '@/components/forms/AICampaignOutput'
-import { campaignBriefSchema, reviewSchema } from '@/validations/campaignBrief.validation'
+import { campaignBriefSchema, reviewSchema, clientDetailsSchema, campaignObjectiveSchema, creativePreferencesSchema } from '@/validations/campaignBrief.validation'
 import { cn } from '@/lib/utils'
 
 const stepComponents = {
@@ -19,14 +19,23 @@ const stepComponents = {
   4: StepReview,
 }
 
+const stepSchemas = {
+  1: clientDetailsSchema,
+  2: campaignObjectiveSchema,
+  3: creativePreferencesSchema,
+  4: reviewSchema,
+}
+
 const CampaignBrief = () => {
   const [currentStep, setCurrentStep] = useState(1)
   const [aiOutput, setAiOutput] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
 
+  // Use full schema resolver to ensure fields are properly registered
+  // We'll still validate step-by-step manually in validateStep()
   const form = useForm({
-    resolver: zodResolver(currentStep === 4 ? reviewSchema : campaignBriefSchema),
+    resolver: zodResolver(campaignBriefSchema),
     mode: 'onChange',
     defaultValues: {
       clientName: '', clientEmail: '', companyName: '', industry: '',
@@ -39,6 +48,11 @@ const CampaignBrief = () => {
     },
   })
 
+  // Reset form errors when step changes
+  useEffect(() => {
+    form.clearErrors()
+  }, [currentStep, form])
+
   const validateStep = useCallback(async () => {
     if (currentStep < 4) {
       const fieldsForStep = {
@@ -46,11 +60,87 @@ const CampaignBrief = () => {
         2: ['campaignName', 'objective', 'keyMessage', 'uniqueSellingPoint', 'targetRegions', 'campaignDuration'],
         3: ['tone', 'channels', 'visualStyle'],
       }
-      const result = await form.trigger(fieldsForStep[currentStep])
-      return result
+
+      const currentFields = fieldsForStep[currentStep]
+      const currentValues = form.getValues()
+
+      // Extract only the fields for this step
+      const valuesForStep = Object.fromEntries(
+        currentFields.map(field => [field, currentValues[field]])
+      )
+
+      console.log(`🔍 Step ${currentStep} - Validating these values:`, valuesForStep)
+
+      try {
+        // Validate using the step-specific schema
+        const schemaMap = {
+          1: clientDetailsSchema,
+          2: campaignObjectiveSchema,
+          3: creativePreferencesSchema,
+        }
+
+        await schemaMap[currentStep].parseAsync(valuesForStep)
+
+        // If we get here, validation passed
+        console.log('✅✅✅ Validation PASSED for step', currentStep)
+        return true
+      } catch (error) {
+        // Validation failed - set errors on the form
+        console.log('❌❌❌ Validation FAILED for step', currentStep)
+        console.log('Error details:', error.errors)
+        
+        // Clear previous errors and set new ones
+        form.clearErrors()
+        error.errors?.forEach(err => {
+          console.log(`Setting error on field '${err.path?.[0]}': ${err.message}`)
+          if (err.path && err.path[0]) {
+            form.setError(err.path[0], { message: err.message })
+          }
+        })
+
+        // Show which fields failed
+        const failedFields = error.errors?.map(e => e.path?.[0]).join(', ') || 'unknown'
+        toast.error(`Please fix: ${failedFields}`)
+
+        // Scroll to first error field after a short delay
+        setTimeout(() => {
+          const firstErrorField = document.querySelector('.border-red-500, .text-red-600')
+          if (firstErrorField) {
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }, 100)
+
+        return false
+      }
     }
     return true
   }, [currentStep, form])
+
+  const handleSubmit = async (e) => {
+    e?.preventDefault()
+    
+    // For step 4, just check if the checkbox is checked
+    if (currentStep === 4) {
+      const agreeToTerms = form.getValues('agreeToTerms')
+      console.log('agreeToTerms value:', agreeToTerms)
+      
+      if (!agreeToTerms) {
+        form.setError('agreeToTerms', { message: 'You must agree to proceed' })
+        toast.error('Please check the agreement checkbox')
+        return
+      }
+
+      // Validate all fields before submission
+      try {
+        await campaignBriefSchema.parseAsync(form.getValues())
+        onSubmit(form.getValues())
+      } catch (error) {
+        console.log('Full validation failed:', error.errors)
+        toast.error('Please complete all previous steps correctly')
+      }
+      return
+    }
+  }
 
   const nextStep = async () => {
     const isValid = await validateStep()
@@ -160,6 +250,7 @@ Respond in JSON format only.`
 
   const CurrentStepComponent = stepComponents[currentStep]
   const formData = form.getValues()
+  const formErrors = form.formState.errors
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -170,7 +261,7 @@ Respond in JSON format only.`
 
       {!isComplete && <StepIndicator currentStep={currentStep} />}
 
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit}>
         <div className="card p-6 sm:p-8">
           <CurrentStepComponent form={form} data={formData} />
 
@@ -179,6 +270,10 @@ Respond in JSON format only.`
               <input
                 type="checkbox"
                 {...form.register('agreeToTerms')}
+                onChange={(e) => {
+                  form.setValue('agreeToTerms', e.target.checked, { shouldValidate: true })
+                }}
+                checked={form.watch('agreeToTerms')}
                 className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
               />
               <div>

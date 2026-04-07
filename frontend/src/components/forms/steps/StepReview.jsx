@@ -60,7 +60,7 @@ const StepReview = ({ data }) => {
             <Field label="Email" value={data.clientEmail} />
             <Field label="Company" value={data.companyName} />
             <Field label="Industry" value={industries[data.industry] || data.industry} />
-            <Field label="Budget" value={`$${Number(data.budget).toLocaleString()}`} />
+            <Field label="Budget" value={data.budget ? `$${Number(data.budget).toLocaleString()}` : 'N/A'} />
             <div className="flex flex-col sm:flex-row sm:gap-4">
               <span className="text-sm text-gray-500 dark:text-gray-400 sm:w-40 flex-shrink-0">Target Audience</span>
               <span className="text-sm text-gray-900 dark:text-white">{data.targetAudience}</span>

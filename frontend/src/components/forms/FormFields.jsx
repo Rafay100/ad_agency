@@ -1,29 +1,37 @@
 import { cn } from '@/lib/utils'
 
-export const InputField = ({ label, error, icon, className, ...props }) => (
-  <div className={className}>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-      {label}
-      {props.required && <span className="text-red-500 ml-1">*</span>}
-    </label>
-    <div className="relative">
-      {icon && (
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          {icon}
-        </div>
-      )}
-      <input
-        className={cn(
-          'input-field',
-          icon && 'pl-10',
-          error && 'border-red-500 focus:ring-red-500'
+export const InputField = ({ label, error, icon, className, onChange, ...props }) => {
+  const handleChange = (e) => {
+    console.log(`📝 InputField onChange for '${props.name}':`, e.target.value)
+    if (onChange) onChange(e)
+  }
+
+  return (
+    <div className={className}>
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+        {label}
+        {props.required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      <div className="relative">
+        {icon && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            {icon}
+          </div>
         )}
-        {...props}
-      />
+        <input
+          className={cn(
+            'input-field',
+            icon && 'pl-10',
+            error && 'border-red-500 focus:ring-red-500'
+          )}
+          onChange={handleChange}
+          {...props}
+        />
+      </div>
+      {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
-    {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
-  </div>
-)
+  )
+}
 
 export const SelectField = ({ label, error, children, className, ...props }) => (
   <div className={className}>

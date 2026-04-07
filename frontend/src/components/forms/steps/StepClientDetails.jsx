@@ -1,21 +1,3 @@
-import { InputField, SelectField, TextareaField } from '../FormFields'
-
-const industries = [
-  { value: '', label: 'Select industry' },
-  { value: 'technology', label: 'Technology' },
-  { value: 'ecommerce', label: 'E-Commerce' },
-  { value: 'healthcare', label: 'Healthcare' },
-  { value: 'finance', label: 'Finance' },
-  { value: 'education', label: 'Education' },
-  { value: 'realestate', label: 'Real Estate' },
-  { value: 'hospitality', label: 'Hospitality' },
-  { value: 'automotive', label: 'Automotive' },
-  { value: 'fashion', label: 'Fashion & Apparel' },
-  { value: 'food', label: 'Food & Beverage' },
-  { value: 'entertainment', label: 'Entertainment' },
-  { value: 'other', label: 'Other' },
-]
-
 const StepClientDetails = ({ form }) => {
   const { register, formState: { errors } } = form
 
@@ -27,60 +9,95 @@ const StepClientDetails = ({ form }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <InputField
-          label="Client Name"
-          placeholder="John Smith"
-          required
-          {...register('clientName')}
-          error={errors.clientName?.message}
-        />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Client Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            {...register('clientName')}
+            placeholder="John Smith"
+            className="input-field"
+          />
+          {errors.clientName && <p className="mt-1 text-sm text-red-600">{errors.clientName.message}</p>}
+        </div>
 
-        <InputField
-          label="Email"
-          type="email"
-          placeholder="john@company.com"
-          required
-          {...register('clientEmail')}
-          error={errors.clientEmail?.message}
-        />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+            Email <span className="text-red-500">*</span>
+          </label>
+          <input
+            {...register('clientEmail')}
+            type="email"
+            placeholder="john@company.com"
+            className="input-field"
+          />
+          {errors.clientEmail && <p className="mt-1 text-sm text-red-600">{errors.clientEmail.message}</p>}
+        </div>
       </div>
 
-      <InputField
-        label="Company Name"
-        placeholder="Acme Corporation"
-        required
-        {...register('companyName')}
-        error={errors.companyName?.message}
-      />
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+          Company Name <span className="text-red-500">*</span>
+        </label>
+        <input
+          {...register('companyName')}
+          placeholder="Acme Corporation"
+          className="input-field"
+        />
+        {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>}
+      </div>
 
-      <SelectField
-        label="Industry"
-        required
-        {...register('industry')}
-        error={errors.industry?.message}
-      >
-        {industries.map(ind => (
-          <option key={ind.value} value={ind.value}>{ind.label}</option>
-        ))}
-      </SelectField>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+          Industry <span className="text-red-500">*</span>
+        </label>
+        <select
+          {...register('industry')}
+          className="input-field"
+        >
+          <option value="">Select industry</option>
+          <option value="technology">Technology</option>
+          <option value="ecommerce">E-Commerce</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="finance">Finance</option>
+          <option value="education">Education</option>
+          <option value="realestate">Real Estate</option>
+          <option value="hospitality">Hospitality</option>
+          <option value="automotive">Automotive</option>
+          <option value="fashion">Fashion & Apparel</option>
+          <option value="food">Food & Beverage</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="other">Other</option>
+        </select>
+        {errors.industry && <p className="mt-1 text-sm text-red-600">{errors.industry.message}</p>}
+      </div>
 
-      <TextareaField
-        label="Target Audience"
-        placeholder="Describe your ideal customer (age, interests, behaviors, pain points)..."
-        required
-        {...register('targetAudience')}
-        error={errors.targetAudience?.message}
-      />
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+          Target Audience <span className="text-red-500">*</span>
+        </label>
+        <textarea
+          {...register('targetAudience')}
+          placeholder="Describe your ideal customer (age, interests, behaviors, pain points)..."
+          className="input-field resize-none"
+          rows={4}
+        />
+        {errors.targetAudience && <p className="mt-1 text-sm text-red-600">{errors.targetAudience.message}</p>}
+      </div>
 
-      <InputField
-        label="Total Budget (USD)"
-        type="number"
-        placeholder="10000"
-        required
-        min={100}
-        {...register('budget')}
-        error={errors.budget?.message}
-      />
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+          Total Budget (USD) <span className="text-red-500">*</span>
+        </label>
+        <input
+          {...register('budget', { valueAsNumber: true })}
+          type="number"
+          placeholder="10000"
+          className="input-field"
+          min={100}
+        />
+        {errors.budget && <p className="mt-1 text-sm text-red-600">{errors.budget.message}</p>}
+      </div>
     </div>
   )
 }
