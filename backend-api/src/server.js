@@ -90,7 +90,8 @@ const start = async () => {
     await sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
     logger.info('Database synchronized')
   } catch (error) {
-    logger.error('Database connection/sync failed:', error.message)
+    logger.error(`Database connection/sync failed: ${error.message}`)
+    logger.error(`Full error: ${JSON.stringify({ code: error.code, original: error.original?.message, parent: error.parent?.message })}`)
     logger.warn('Server will start without database. Check database configuration.')
   }
 
