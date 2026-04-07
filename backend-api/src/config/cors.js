@@ -5,14 +5,24 @@ const corsOptions = {
     // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true)
 
-    const allowedOrigins = process.env.FRONTEND_URL
-      ? process.env.FRONTEND_URL.split(',').map(u => u.trim())
-      : ['http://localhost:3000']
+    // Allow all origins temporarily for debugging
+    // TODO: Restrict this in production
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      process.env.FRONTEND_URL,
+    ].filter(Boolean)
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Also allow any vercel.app or onrender.com domain
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
+      origin.endsWith('.onrender.com') ||
+      origin.includes('vercel.app')
+    ) {
       callback(null, true)
     } else {
-      callback(new Error('Not allowed by CORS'))
+      callback(new Error(`Not allowed by CORS. Requested origin: ${origin}`))
     }
   },
   credentials: true,
