@@ -42,6 +42,13 @@ const config = {
 const env = process.env.NODE_ENV || 'development'
 const dbConfig = config[env]
 
+// Debug: Log environment variables (remove after fixing)
+console.log('DB_HOST:', dbConfig.host)
+console.log('DB_PORT:', dbConfig.port)
+console.log('DB_NAME:', dbConfig.database)
+console.log('DB_USER:', dbConfig.username)
+console.log('DB_PASSWORD type:', typeof dbConfig.password, 'value:', dbConfig.password ? '***EXISTS***' : 'UNDEFINED/EMPTY')
+
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
   host: dbConfig.host,
   port: dbConfig.port,
